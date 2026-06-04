@@ -1,0 +1,74 @@
+name: Documentation Validation
+
+on:
+push:
+branches:
+- main
+- master
+
+pull_request:
+branches:
+- main
+- master
+
+jobs:
+documentation-quality:
+name: Documentation Quality Checks
+
+```
+runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
+
+  - name: Validate Markdown Files Exist
+    run: |
+      echo "Checking required documentation..."
+
+      test -f docs/architecture/system-overview.md
+      test -f docs/architecture/ecommerce-architecture.md
+      test -f docs/database/schema-design.md
+      test -f docs/infrastructure/aws-infrastructure.md
+
+      echo "Required documentation found."
+
+  - name: Validate Mermaid Diagram Files
+    run: |
+      echo "Checking Mermaid diagrams..."
+
+      test -f diagrams/system-architecture.mmd
+      test -f diagrams/product-catalog-flow.mmd
+      test -f diagrams/cart-flow.mmd
+      test -f diagrams/checkout-flow.mmd
+
+      echo "Diagram validation completed."
+
+  - name: Documentation Statistics
+    run: |
+      echo "Repository Documentation Metrics"
+      echo "--------------------------------"
+
+      echo "Markdown Files:"
+      find docs -name "*.md" | wc -l
+
+      echo "Mermaid Files:"
+      find diagrams -name "*.mmd" | wc -l
+
+  - name: Architecture Repository Validation
+    run: |
+      echo "Validating architecture repository structure..."
+
+      test -d docs
+      test -d diagrams
+      test -d assets
+
+      echo "Repository structure validation passed."
+
+  - name: Success
+    run: |
+      echo "========================================="
+      echo "Documentation validation completed."
+      echo "Repository structure is healthy."
+      echo "========================================="
+```

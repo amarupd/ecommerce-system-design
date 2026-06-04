@@ -1,0 +1,182 @@
+flowchart TB
+
+    %% =========================
+    %% USERS
+    %% =========================
+
+    Customer[👤 Customer]
+    Admin[👨‍💼 Admin User]
+
+    %% =========================
+    %% FRONTEND LAYER
+    %% =========================
+
+    subgraph Frontend["🌐 Frontend Layer"]
+        Storefront["Next.js Ecommerce Storefront"]
+        AdminPanel["React/Next.js Admin Panel"]
+    end
+
+    %% =========================
+    %% EDGE LAYER
+    %% =========================
+
+    subgraph Edge["⚡ Edge & Delivery Layer"]
+        CDN["AWS CloudFront CDN"]
+        ALB["Application Load Balancer"]
+        WAF["AWS WAF"]
+    end
+
+    %% =========================
+    %% APPLICATION LAYER
+    %% =========================
+
+    subgraph Backend["🚀 Application Layer"]
+        API["AdonisJS API Gateway"]
+
+        Auth["Authentication Module"]
+        Catalog["Product Catalog Module"]
+        Inventory["Inventory Module"]
+        Cart["Cart Module"]
+        Checkout["Checkout Module"]
+        Orders["Order Management Module"]
+        Coupons["Coupon Engine"]
+        Users["User Management Module"]
+        Reports["Reporting Module"]
+    end
+
+    %% =========================
+    %% CACHE LAYER
+    %% =========================
+
+    subgraph Cache["⚡ Redis Layer"]
+        Redis["Redis Cache"]
+        Sessions["Session Store"]
+        RateLimit["Rate Limiter"]
+        Queue["Queue / Background Jobs"]
+    end
+
+    %% =========================
+    %% DATABASE LAYER
+    %% =========================
+
+    subgraph Database["🗄 Database Layer"]
+        MySQL["MySQL Primary Database"]
+        Replica["MySQL Read Replica"]
+    end
+
+    %% =========================
+    %% STORAGE LAYER
+    %% =========================
+
+    subgraph Storage["📦 Storage Layer"]
+        S3["AWS S3"]
+        Assets["Product Images"]
+        Backups["Database Backups"]
+    end
+
+    %% =========================
+    %% EXTERNAL SERVICES
+    %% =========================
+
+    subgraph External["🔗 External Services"]
+        Payment["Payment Gateway"]
+        Email["Email Service"]
+        SMS["SMS / Notification Service"]
+    end
+
+    %% =========================
+    %% OBSERVABILITY
+    %% =========================
+
+    subgraph Monitoring["📊 Monitoring & Operations"]
+        Logs["Centralized Logs"]
+        Metrics["Metrics Dashboard"]
+        Alerts["Alerting System"]
+    end
+
+    %% =========================
+    %% USER FLOWS
+    %% =========================
+
+    Customer --> CDN
+    Admin --> CDN
+
+    CDN --> WAF
+    WAF --> ALB
+
+    ALB --> Storefront
+    ALB --> AdminPanel
+
+    Storefront --> API
+    AdminPanel --> API
+
+    %% =========================
+    %% MODULE ROUTING
+    %% =========================
+
+    API --> Auth
+    API --> Catalog
+    API --> Inventory
+    API --> Cart
+    API --> Checkout
+    API --> Orders
+    API --> Coupons
+    API --> Users
+    API --> Reports
+
+    %% =========================
+    %% REDIS
+    %% =========================
+
+    Auth --> Sessions
+    Cart --> Redis
+    Catalog --> Redis
+    Coupons --> Redis
+    API --> RateLimit
+    Orders --> Queue
+
+    %% =========================
+    %% DATABASE
+    %% =========================
+
+    Auth --> MySQL
+    Catalog --> MySQL
+    Inventory --> MySQL
+    Cart --> MySQL
+    Checkout --> MySQL
+    Orders --> MySQL
+    Coupons --> MySQL
+    Users --> MySQL
+    Reports --> Replica
+
+    MySQL --> Replica
+
+    %% =========================
+    %% STORAGE
+    %% =========================
+
+    Catalog --> S3
+    S3 --> Assets
+
+    MySQL --> Backups
+
+    %% =========================
+    %% EXTERNAL INTEGRATIONS
+    %% =========================
+
+    Checkout --> Payment
+    Orders --> Email
+    Orders --> SMS
+
+    %% =========================
+    %% OBSERVABILITY
+    %% =========================
+
+    API --> Logs
+    API --> Metrics
+
+    MySQL --> Metrics
+    Redis --> Metrics
+
+    Logs --> Alerts
+    Metrics --> Alerts
