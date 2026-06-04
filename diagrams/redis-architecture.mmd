@@ -1,0 +1,117 @@
+flowchart TB
+
+    Customer[Customer]
+    Admin[Admin]
+
+    Customer --> Storefront
+    Admin --> AdminPanel
+
+    Storefront[Next.js Storefront]
+    AdminPanel[Admin Panel]
+
+    Storefront --> API
+    AdminPanel --> API
+
+    API[AdonisJS API]
+
+    API --> Redis
+
+    Redis[(Redis Cluster)]
+
+    Redis --> ProductCache
+    Redis --> CategoryCache
+    Redis --> InventoryCache
+    Redis --> CouponCache
+    Redis --> SessionStore
+    Redis --> CartCache
+    Redis --> RateLimiter
+    Redis --> QueueSystem
+
+    ProductCache[Product Cache]
+    CategoryCache[Category Cache]
+    InventoryCache[Inventory Cache]
+    CouponCache[Coupon Cache]
+    SessionStore[Session Store]
+    CartCache[Cart Cache]
+    RateLimiter[Rate Limiting]
+    QueueSystem[Background Jobs]
+
+    API --> MySQL
+
+    MySQL[(MySQL)]
+
+    ProductCache --> MySQL
+    CategoryCache --> MySQL
+    InventoryCache --> MySQL
+    CouponCache --> MySQL
+    CartCache --> MySQL
+
+    ProductRequest[Product Request]
+    ProductRequest --> ProductCache
+
+    ProductCache --> CacheHit
+    ProductCache --> CacheMiss
+
+    CacheHit[Return Cached Data]
+
+    CacheMiss[Load From Database]
+
+    CacheMiss --> MySQL
+
+    MySQL --> RefreshCache
+
+    RefreshCache[Populate Cache]
+
+    RefreshCache --> ProductCache
+
+    AdminUpdate[Admin Updates Product]
+
+    AdminUpdate --> MySQL
+
+    AdminUpdate --> CacheInvalidation
+
+    CacheInvalidation[Invalidate Cache]
+
+    CacheInvalidation --> ProductCache
+    CacheInvalidation --> CategoryCache
+    CacheInvalidation --> InventoryCache
+
+    UserLogin[User Login]
+
+    UserLogin --> SessionStore
+
+    CartAction[Cart Update]
+
+    CartAction --> CartCache
+
+    Checkout[Checkout]
+
+    Checkout --> InventoryCache
+    Checkout --> CouponCache
+
+    QueueSystem --> EmailJobs
+
+    QueueSystem --> NotificationJobs
+
+    EmailJobs[Email Jobs]
+    NotificationJobs[Notification Jobs]
+
+    Redis --> Metrics
+
+    Metrics[Redis Metrics]
+
+    Metrics --> Dashboard
+
+    Dashboard[Monitoring Dashboard]
+
+    Redis --> Primary
+
+    Primary[Redis Primary]
+
+    Primary --> Replica1
+
+    Primary --> Replica2
+
+    Replica1[Redis Replica 1]
+
+    Replica2[Redis Replica 2]

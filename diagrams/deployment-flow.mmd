@@ -1,0 +1,137 @@
+flowchart TD
+
+    Developer[Developer]
+
+    Developer --> GitPush
+
+    GitPush[Push Code]
+
+    GitPush --> GitHub
+
+    GitHub[GitHub Repository]
+
+    GitHub --> PullRequest
+
+    PullRequest[Pull Request]
+
+    PullRequest --> CodeReview
+
+    CodeReview[Code Review]
+
+    CodeReview --> Merge
+
+    Merge[Merge To Main Branch]
+
+    Merge --> CICD
+
+    CICD[GitHub Actions CI/CD]
+
+    CICD --> InstallDependencies
+
+    InstallDependencies[Install Dependencies]
+
+    InstallDependencies --> Linting
+
+    Linting[Code Linting]
+
+    Linting --> UnitTests
+
+    UnitTests[Unit Tests]
+
+    UnitTests --> Build
+
+    Build[Application Build]
+
+    Build --> SecurityScan
+
+    SecurityScan[Security Scan]
+
+    SecurityScan --> DockerBuild
+
+    DockerBuild[Build Docker Image]
+
+    DockerBuild --> DockerRegistry
+
+    DockerRegistry[Container Registry]
+
+    DockerRegistry --> DeployStaging
+
+    DeployStaging[Deploy To Staging]
+
+    DeployStaging --> StagingTests
+
+    StagingTests[Smoke Tests]
+
+    StagingTests --> Approval
+
+    Approval[Deployment Approval]
+
+    Approval --> DeployProduction
+
+    DeployProduction[Deploy To Production]
+
+    DeployProduction --> LoadBalancer
+
+    LoadBalancer[AWS Load Balancer]
+
+    LoadBalancer --> AppServer1
+
+    LoadBalancer --> AppServer2
+
+    LoadBalancer --> AppServer3
+
+    AppServer1[App Instance 1]
+    AppServer2[App Instance 2]
+    AppServer3[App Instance 3]
+
+    AppServer1 --> MySQL
+
+    AppServer2 --> MySQL
+
+    AppServer3 --> MySQL
+
+    AppServer1 --> Redis
+
+    AppServer2 --> Redis
+
+    AppServer3 --> Redis
+
+    MySQL[(MySQL)]
+
+    Redis[(Redis)]
+
+    DeployProduction --> Monitoring
+
+    Monitoring[Monitoring & Logging]
+
+    Monitoring --> Alerts
+
+    Alerts[Alerting System]
+
+    Monitoring --> Dashboard
+
+    Dashboard[Operations Dashboard]
+
+    DeployProduction --> HealthChecks
+
+    HealthChecks[Application Health Checks]
+
+    HealthChecks --> Success
+
+    HealthChecks --> Rollback
+
+    Success[Deployment Successful]
+
+    Rollback[Automatic Rollback]
+
+    Rollback --> PreviousVersion
+
+    PreviousVersion[Restore Previous Release]
+
+    MySQL --> Backup
+
+    Backup[Automated Backups]
+
+    Backup --> S3
+
+    S3[AWS S3 Backup Storage]

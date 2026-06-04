@@ -1,0 +1,149 @@
+flowchart LR
+
+    %% =====================================
+    %% ADMIN CATALOG CREATION
+    %% =====================================
+
+    Admin[👨‍💼 Admin]
+
+    Admin --> Category
+    Admin --> Product
+    Admin --> Attributes
+    Admin --> Images
+
+    Category[Product Categories]
+    Product[Product]
+    Attributes[Attributes]
+    Images[Product Images]
+
+    %% =====================================
+    %% PRODUCT MODELING
+    %% =====================================
+
+    Product --> Variants
+
+    Attributes --> Variants
+
+    Variants[Product Variants]
+
+    Variants --> Size
+    Variants --> Color
+    Variants --> SKU
+    Variants --> Price
+
+    Size[Size]
+    Color[Color]
+    SKU[SKU]
+    Price[Price]
+
+    %% =====================================
+    %% INVENTORY
+    %% =====================================
+
+    Variants --> Inventory
+
+    Inventory[Inventory Assignment]
+
+    Inventory --> AvailableStock
+    Inventory --> ReservedStock
+
+    AvailableStock[Available Stock]
+    ReservedStock[Reserved Stock]
+
+    %% =====================================
+    %% PUBLISHING FLOW
+    %% =====================================
+
+    Product --> Validation
+
+    Validation[Catalog Validation]
+
+    Validation --> Published
+
+    Published[Published Product]
+
+    %% =====================================
+    %% DATABASE STORAGE
+    %% =====================================
+
+    Published --> MySQL
+
+    MySQL[(MySQL)]
+
+    Images --> S3
+
+    S3[(AWS S3)]
+
+    %% =====================================
+    %% CACHE LAYER
+    %% =====================================
+
+    MySQL --> Redis
+
+    Redis[(Redis Cache)]
+
+    Redis --> ProductCache
+    Redis --> CategoryCache
+
+    ProductCache[Product Cache]
+    CategoryCache[Category Cache]
+
+    %% =====================================
+    %% STOREFRONT REQUEST FLOW
+    %% =====================================
+
+    Customer[👤 Customer]
+
+    Customer --> Storefront
+
+    Storefront[Next.js Storefront]
+
+    Storefront --> ProductAPI
+
+    ProductAPI[Catalog API]
+
+    ProductAPI --> Redis
+
+    Redis -->|Cache Hit| Storefront
+
+    ProductAPI -->|Cache Miss| MySQL
+
+    MySQL --> Redis
+
+    %% =====================================
+    %% PRODUCT PAGE DATA
+    %% =====================================
+
+    Storefront --> ProductPage
+
+    ProductPage[Product Detail Page]
+
+    ProductPage --> VariantSelection
+    ProductPage --> InventoryStatus
+    ProductPage --> ProductImages
+
+    VariantSelection[Variant Selection]
+    InventoryStatus[Inventory Visibility]
+    ProductImages[Optimized Images]
+
+    ProductImages --> S3
+
+    %% =====================================
+    %% UPDATE FLOW
+    %% =====================================
+
+    Admin --> ProductUpdate
+
+    ProductUpdate[Product Update]
+
+    ProductUpdate --> MySQL
+
+    ProductUpdate --> CacheInvalidation
+
+    CacheInvalidation[Cache Invalidation]
+
+    CacheInvalidation --> Redis
+
+    Redis --> RefreshedCache
+
+    RefreshedCache[Fresh Product Cache]

@@ -1,0 +1,138 @@
+flowchart TD
+
+    Customer[Customer]
+
+    Customer --> CDN
+
+    CDN[AWS CloudFront]
+
+    CDN --> LoadBalancer
+
+    LoadBalancer[AWS Load Balancer]
+
+    LoadBalancer --> PrimaryRegion
+
+    subgraph PrimaryRegion["AWS Primary Region"]
+
+        App1[Application Server 1]
+        App2[Application Server 2]
+
+        App1 --> PrimaryDB
+        App2 --> PrimaryDB
+
+        App1 --> PrimaryRedis
+        App2 --> PrimaryRedis
+
+        PrimaryDB[(MySQL Primary)]
+        PrimaryRedis[(Redis Primary)]
+    end
+
+    PrimaryDB --> ReplicaDB
+
+    ReplicaDB[(Read Replica)]
+
+    PrimaryDB --> BackupProcess
+
+    BackupProcess[Automated Backup Service]
+
+    BackupProcess --> S3Backup
+
+    S3Backup[(AWS S3 Backups)]
+
+    S3Backup --> SecondaryRegion
+
+    subgraph SecondaryRegion["AWS Disaster Recovery Region"]
+
+        DRApp1[DR Application Server]
+
+        DRDB[(MySQL Disaster Recovery)]
+
+        DRRedis[(Redis Disaster Recovery)]
+
+        DRApp1 --> DRDB
+        DRApp1 --> DRRedis
+    end
+
+    PrimaryRegion --> Monitoring
+
+    SecondaryRegion --> Monitoring
+
+    Monitoring[Monitoring Platform]
+
+    Monitoring --> Alerting
+
+    Alerting[Alerting System]
+
+    Alerting --> OperationsTeam
+
+    OperationsTeam[Operations Team]
+
+    PrimaryDB --> Failure
+
+    Failure[Primary Region Failure]
+
+    Failure --> Detection
+
+    Detection[Failure Detection]
+
+    Detection --> DRActivation
+
+    DRActivation[Disaster Recovery Activation]
+
+    DRActivation --> DNSFailover
+
+    DNSFailover[DNS Failover]
+
+    DNSFailover --> SecondaryRegion
+
+    SecondaryRegion --> ServiceRecovery
+
+    ServiceRecovery[Service Restored]
+
+    ServiceRecovery --> Customer
+
+    PrimaryRedis --> RedisReplication
+
+    RedisReplication[Redis Replication]
+
+    RedisReplication --> DRRedis
+
+    PrimaryDB --> DatabaseReplication
+
+    DatabaseReplication[Cross Region Replication]
+
+    DatabaseReplication --> DRDB
+
+    Monitoring --> RTO
+
+    Monitoring --> RPO
+
+    RTO[Recovery Time Objective]
+
+    RPO[Recovery Point Objective]
+
+    BackupValidation[Backup Validation Testing]
+
+    BackupValidation --> S3Backup
+
+    BackupValidation --> DRDB
+
+    SecurityIncident[Security Incident]
+
+    SecurityIncident --> Isolation
+
+    Isolation[Affected Systems Isolation]
+
+    Isolation --> RecoveryProcess
+
+    RecoveryProcess[Recovery Procedures]
+
+    RecoveryProcess --> ServiceRecovery
+
+    OperationsTeam --> DRDrill
+
+    DRDrill[Disaster Recovery Drills]
+
+    DRDrill --> Preparedness
+
+    Preparedness[Recovery Readiness]

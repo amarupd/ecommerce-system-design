@@ -1,0 +1,155 @@
+flowchart TD
+
+    Customer[Customer]
+
+    Customer --> AuthPage
+
+    AuthPage[Login / Register Page]
+
+    %% =========================
+    %% REGISTRATION FLOW
+    %% =========================
+
+    AuthPage --> Register
+
+    Register[User Registration]
+
+    Register --> ValidateRegistration
+
+    ValidateRegistration[Validate Input]
+
+    ValidateRegistration --> CreateAccount
+
+    CreateAccount[Create User Account]
+
+    CreateAccount --> UserDB
+
+    UserDB[(MySQL)]
+
+    CreateAccount --> Verification
+
+    Verification[Email / OTP Verification]
+
+    Verification --> AccountActivated
+
+    AccountActivated[Account Activated]
+
+    %% =========================
+    %% LOGIN FLOW
+    %% =========================
+
+    AuthPage --> Login
+
+    Login[User Login]
+
+    Login --> CredentialValidation
+
+    CredentialValidation[Validate Credentials]
+
+    CredentialValidation --> InvalidCredentials
+    CredentialValidation --> ValidCredentials
+
+    InvalidCredentials[Login Failed]
+
+    ValidCredentials[Credentials Verified]
+
+    %% =========================
+    %% TOKEN GENERATION
+    %% =========================
+
+    ValidCredentials --> GenerateToken
+
+    GenerateToken[Generate Access Token]
+
+    GenerateToken --> SessionStore
+
+    SessionStore[(Redis Session Store)]
+
+    GenerateToken --> Authenticated
+
+    Authenticated[Authenticated User]
+
+    %% =========================
+    %% AUTHORIZED REQUESTS
+    %% =========================
+
+    Authenticated --> ProtectedRoute
+
+    ProtectedRoute[Protected API Request]
+
+    ProtectedRoute --> TokenValidation
+
+    TokenValidation[Validate Token]
+
+    TokenValidation --> TokenValid
+    TokenValidation --> TokenExpired
+
+    TokenValid[Access Granted]
+
+    TokenExpired[Unauthorized]
+
+    %% =========================
+    %% ROLE BASED ACCESS
+    %% =========================
+
+    TokenValid --> RBAC
+
+    RBAC[Role Based Access Control]
+
+    RBAC --> CustomerRole
+    RBAC --> AdminRole
+
+    CustomerRole[Customer Permissions]
+    AdminRole[Admin Permissions]
+
+    %% =========================
+    %% PASSWORD RESET
+    %% =========================
+
+    AuthPage --> ForgotPassword
+
+    ForgotPassword[Forgot Password]
+
+    ForgotPassword --> SendReset
+
+    SendReset[Send Reset Link]
+
+    SendReset --> EmailService
+
+    EmailService[Email Service]
+
+    EmailService --> ResetPassword
+
+    ResetPassword[Reset Password]
+
+    ResetPassword --> UserDB
+
+    %% =========================
+    %% LOGOUT FLOW
+    %% =========================
+
+    Authenticated --> Logout
+
+    Logout[Logout]
+
+    Logout --> DestroySession
+
+    DestroySession[Invalidate Session]
+
+    DestroySession --> SessionStore
+
+    %% =========================
+    %% MONITORING
+    %% =========================
+
+    Login --> Metrics
+
+    InvalidCredentials --> Metrics
+
+    TokenExpired --> Metrics
+
+    Metrics[Authentication Metrics]
+
+    Metrics --> Dashboard
+
+    Dashboard[Security Dashboard]

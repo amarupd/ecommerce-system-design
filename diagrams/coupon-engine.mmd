@@ -1,0 +1,237 @@
+flowchart TD
+
+    %% =====================================
+    %% PRODUCT SETUP
+    %% =====================================
+
+    Product[Product]
+
+    Product --> Variant
+
+    Variant[Product Variant]
+
+    Variant --> InventoryRecord
+
+    InventoryRecord[Inventory Record]
+
+    %% =====================================
+    %% INVENTORY MODEL
+    %% =====================================
+
+    InventoryRecord --> AvailableStock
+    InventoryRecord --> ReservedStock
+
+    AvailableStock[Available Quantity]
+    ReservedStock[Reserved Quantity]
+
+    %% =====================================
+    %% CUSTOMER PURCHASE FLOW
+    %% =====================================
+
+    Customer[👤 Customer]
+
+    Customer --> ProductPage
+
+    ProductPage[Product Detail Page]
+
+    ProductPage --> AddToCart
+
+    AddToCart[Add To Cart]
+
+    AddToCart --> Checkout
+
+    Checkout[Checkout Started]
+
+    %% =====================================
+    %% INVENTORY VALIDATION
+    %% =====================================
+
+    Checkout --> InventoryValidation
+
+    InventoryValidation[Inventory Validation]
+
+    InventoryValidation --> StockAvailable
+    InventoryValidation --> StockUnavailable
+
+    StockAvailable[Inventory Available]
+    StockUnavailable[Out Of Stock]
+
+    StockUnavailable --> CheckoutFailed
+
+    CheckoutFailed[Checkout Rejected]
+
+    %% =====================================
+    %% INVENTORY RESERVATION
+    %% =====================================
+
+    StockAvailable --> InventoryReservation
+
+    InventoryReservation[Reserve Inventory]
+
+    InventoryReservation --> ReserveUpdate
+
+    ReserveUpdate[Move Quantity To Reserved Stock]
+
+    ReserveUpdate --> ReservationCreated
+
+    ReservationCreated[Reservation Active]
+
+    %% =====================================
+    %% PAYMENT FLOW
+    %% =====================================
+
+    ReservationCreated --> PaymentProcessing
+
+    PaymentProcessing[Payment Processing]
+
+    PaymentProcessing --> PaymentSuccess
+    PaymentProcessing --> PaymentFailed
+
+    PaymentSuccess[Payment Successful]
+    PaymentFailed[Payment Failed]
+
+    %% =====================================
+    %% PAYMENT FAILURE
+    %% =====================================
+
+    PaymentFailed --> ReleaseReservation
+
+    ReleaseReservation[Release Reserved Inventory]
+
+    ReleaseReservation --> RestoreAvailable
+
+    RestoreAvailable[Restore Available Quantity]
+
+    %% =====================================
+    %% PAYMENT SUCCESS
+    %% =====================================
+
+    PaymentSuccess --> OrderConfirmed
+
+    OrderConfirmed[Order Confirmed]
+
+    OrderConfirmed --> FinalInventoryDeduction
+
+    FinalInventoryDeduction[Consume Reserved Inventory]
+
+    FinalInventoryDeduction --> InventoryUpdated
+
+    InventoryUpdated[Inventory Updated]
+
+    %% =====================================
+    %% CANCELLATION FLOW
+    %% =====================================
+
+    OrderConfirmed --> OrderCancelled
+
+    OrderCancelled[Order Cancelled]
+
+    OrderCancelled --> InventoryRestore
+
+    InventoryRestore[Return Quantity To Inventory]
+
+    InventoryRestore --> AvailableStock
+
+    %% =====================================
+    %% RETURN FLOW
+    %% =====================================
+
+    DeliveredOrder[Delivered Order]
+
+    DeliveredOrder --> ReturnRequested
+
+    ReturnRequested[Return Requested]
+
+    ReturnRequested --> ReturnApproved
+    ReturnRequested --> ReturnRejected
+
+    ReturnApproved[Return Approved]
+
+    ReturnApproved --> WarehouseInspection
+
+    WarehouseInspection[Warehouse Inspection]
+
+    WarehouseInspection --> Restock
+    WarehouseInspection --> Discard
+
+    Restock[Return To Inventory]
+
+    Restock --> AvailableStock
+
+    Discard[Damaged / Unsellable]
+
+    %% =====================================
+    %% OVERSOLD PREVENTION
+    %% =====================================
+
+    InventoryValidation --> AtomicUpdate
+
+    AtomicUpdate[Atomic Inventory Update]
+
+    AtomicUpdate --> RowLock
+
+    RowLock[Database Row Lock]
+
+    RowLock --> InventoryReservation
+
+    %% =====================================
+    %% RESERVATION EXPIRY
+    %% =====================================
+
+    ReservationCreated --> ReservationTimeout
+
+    ReservationTimeout[Reservation Expired]
+
+    ReservationTimeout --> ReleaseReservation
+
+    %% =====================================
+    %% INVENTORY AUDIT
+    %% =====================================
+
+    InventoryReservation --> AuditLog
+
+    FinalInventoryDeduction --> AuditLog
+
+    InventoryRestore --> AuditLog
+
+    Restock --> AuditLog
+
+    AuditLog[Inventory Audit Log]
+
+    AuditLog --> BeforeQuantity
+
+    AuditLog --> AfterQuantity
+
+    AuditLog --> ChangeReason
+
+    BeforeQuantity[Before Quantity]
+    AfterQuantity[After Quantity]
+    ChangeReason[Reason Code]
+
+    %% =====================================
+    %% MONITORING
+    %% =====================================
+
+    InventoryUpdated --> Metrics
+
+    ReservationCreated --> Metrics
+
+    StockUnavailable --> Metrics
+
+    Metrics[Inventory Metrics]
+
+    Metrics --> Dashboard
+
+    Dashboard[Inventory Dashboard]
+
+    %% =====================================
+    %% STORAGE LAYER
+    %% =====================================
+
+    InventoryRecord --> MySQL
+
+    MySQL[(MySQL)]
+
+    InventoryValidation --> Redis
+
+    Redis[(Redis Cache)]

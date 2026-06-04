@@ -1,0 +1,146 @@
+stateDiagram-v2
+
+    %% =====================================
+    %% ORDER CREATION
+    %% =====================================
+
+    [*] --> CartCheckout
+
+    CartCheckout --> OrderCreated : Checkout Completed
+
+    OrderCreated : Order Created
+    OrderCreated : Order Number Generated
+    OrderCreated : Items Snapshotted
+
+    %% =====================================
+    %% PAYMENT STATES
+    %% =====================================
+
+    OrderCreated --> PaymentPending
+
+    PaymentPending : Awaiting Payment Confirmation
+
+    PaymentPending --> PaymentSuccess : Payment Verified
+    PaymentPending --> PaymentFailed : Payment Failed
+    PaymentPending --> PaymentExpired : Timeout
+
+    PaymentFailed --> Cancelled
+    PaymentExpired --> Cancelled
+
+    %% =====================================
+    %% ORDER CONFIRMATION
+    %% =====================================
+
+    PaymentSuccess --> Confirmed
+
+    Confirmed : Order Confirmed
+    Confirmed : Inventory Locked
+
+    %% =====================================
+    %% FULFILLMENT
+    %% =====================================
+
+    Confirmed --> Processing
+
+    Processing : Warehouse Processing
+    Processing : Picking Items
+    Processing : Packing Items
+
+    Processing --> ReadyToShip
+
+    ReadyToShip : Shipment Prepared
+
+    %% =====================================
+    %% SHIPPING FLOW
+    %% =====================================
+
+    ReadyToShip --> Shipped
+
+    Shipped : Courier Assigned
+    Shipped : Tracking Number Generated
+
+    Shipped --> InTransit
+
+    InTransit : Package Moving
+
+    InTransit --> OutForDelivery
+
+    OutForDelivery : Final Delivery Attempt
+
+    OutForDelivery --> Delivered
+
+    Delivered : Successfully Delivered
+
+    %% =====================================
+    %% CUSTOMER CANCELLATION
+    %% =====================================
+
+    Confirmed --> CancellationRequested
+
+    CancellationRequested : Customer Cancellation Request
+
+    CancellationRequested --> Cancelled : Approved
+    CancellationRequested --> Confirmed : Rejected
+
+    %% =====================================
+    %% OPERATIONAL CANCELLATION
+    %% =====================================
+
+    Processing --> Cancelled : Inventory Issue
+    ReadyToShip --> Cancelled : Operational Issue
+
+    Cancelled : Order Cancelled
+
+    %% =====================================
+    %% REFUND FLOW
+    %% =====================================
+
+    Cancelled --> RefundPending
+
+    RefundPending : Refund Initiated
+
+    RefundPending --> Refunded
+
+    Refunded : Refund Completed
+
+    %% =====================================
+    %% RETURNS FLOW
+    %% =====================================
+
+    Delivered --> ReturnRequested
+
+    ReturnRequested : Customer Requests Return
+
+    ReturnRequested --> ReturnApproved
+    ReturnRequested --> ReturnRejected
+
+    ReturnApproved : Return Authorized
+
+    ReturnApproved --> ReturnInTransit
+
+    ReturnInTransit : Return Shipment Moving
+
+    ReturnInTransit --> ReturnReceived
+
+    ReturnReceived : Warehouse Received Return
+
+    ReturnReceived --> QualityInspection
+
+    QualityInspection : Product Inspection
+
+    QualityInspection --> RefundPending : Return Accepted
+    QualityInspection --> ReturnRejected : Return Rejected
+
+    ReturnRejected : Return Denied
+
+    %% =====================================
+    %% ORDER COMPLETION
+    %% =====================================
+
+    Delivered --> Completed
+
+    Completed : Order Lifecycle Finished
+
+    Completed --> [*]
+
+    Refunded --> [*]

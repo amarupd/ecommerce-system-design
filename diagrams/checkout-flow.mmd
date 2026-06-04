@@ -1,0 +1,175 @@
+flowchart TD
+
+    %% =====================================
+    %% CUSTOMER ENTRY
+    %% =====================================
+
+    Customer[👤 Customer]
+
+    Customer --> GuestCart
+    Customer --> Login
+
+    %% =====================================
+    %% GUEST CART FLOW
+    %% =====================================
+
+    GuestCart[Guest Cart]
+
+    GuestCart --> LocalStorage
+    GuestCart --> AddItem
+
+    LocalStorage[Browser Storage]
+    AddItem[Add Product To Cart]
+
+    %% =====================================
+    %% AUTHENTICATED FLOW
+    %% =====================================
+
+    Login[User Login]
+
+    Login --> UserCart
+
+    UserCart[Authenticated Cart]
+
+    %% =====================================
+    %% CART MERGE FLOW
+    %% =====================================
+
+    GuestCart --> CartMerge
+
+    UserCart --> CartMerge
+
+    CartMerge[Cart Merge Engine]
+
+    CartMerge --> MergeRules
+
+    MergeRules[Merge Products & Quantities]
+
+    MergeRules --> UnifiedCart
+
+    UnifiedCart[Unified User Cart]
+
+    %% =====================================
+    %% CART STORAGE
+    %% =====================================
+
+    UnifiedCart --> CartAPI
+
+    CartAPI[Cart API]
+
+    CartAPI --> Redis
+
+    CartAPI --> MySQL
+
+    Redis[(Redis Cart Cache)]
+    MySQL[(MySQL)]
+
+    %% =====================================
+    %% MULTI DEVICE SYNC
+    %% =====================================
+
+    UnifiedCart --> Device1
+    UnifiedCart --> Device2
+    UnifiedCart --> Device3
+
+    Device1[📱 Mobile]
+    Device2[💻 Desktop]
+    Device3[📱 Tablet]
+
+    Device1 --> CartAPI
+    Device2 --> CartAPI
+    Device3 --> CartAPI
+
+    %% =====================================
+    %% REAL TIME SYNCHRONIZATION
+    %% =====================================
+
+    CartAPI --> CartEvents
+
+    CartEvents[Cart Update Events]
+
+    CartEvents --> SyncEngine
+
+    SyncEngine[Synchronization Engine]
+
+    SyncEngine --> Device1
+    SyncEngine --> Device2
+    SyncEngine --> Device3
+
+    %% =====================================
+    %% INVENTORY VALIDATION
+    %% =====================================
+
+    UnifiedCart --> InventoryCheck
+
+    InventoryCheck[Inventory Validation]
+
+    InventoryCheck --> InStock
+    InventoryCheck --> OutOfStock
+
+    InStock[Available]
+    OutOfStock[Unavailable]
+
+    %% =====================================
+    %% PRICE VALIDATION
+    %% =====================================
+
+    UnifiedCart --> PriceCheck
+
+    PriceCheck[Price Validation]
+
+    PriceCheck --> CurrentPrice
+
+    CurrentPrice[Latest Product Pricing]
+
+    %% =====================================
+    %% CART RECOVERY
+    %% =====================================
+
+    MySQL --> RecoveryEngine
+
+    RecoveryEngine[Cart Recovery]
+
+    RecoveryEngine --> ReturningUser
+
+    ReturningUser[Returning Customer]
+
+    %% =====================================
+    %% CHECKOUT HANDOFF
+    %% =====================================
+
+    UnifiedCart --> CheckoutValidation
+
+    CheckoutValidation[Final Cart Validation]
+
+    CheckoutValidation --> Checkout
+
+    Checkout[Checkout Process]
+
+    %% =====================================
+    %% ABANDONED CART FLOW
+    %% =====================================
+
+    UnifiedCart --> AbandonedCart
+
+    AbandonedCart[Abandoned Cart]
+
+    AbandonedCart --> RetentionEngine
+
+    RetentionEngine[Recovery Campaign]
+
+    RetentionEngine --> EmailReminder
+
+    EmailReminder[Email / Notification]
+
+    %% =====================================
+    %% MONITORING
+    %% =====================================
+
+    CartAPI --> Metrics
+
+    Metrics[Cart Metrics]
+
+    Metrics --> Dashboard
+
+    Dashboard[Operational Dashboard]
