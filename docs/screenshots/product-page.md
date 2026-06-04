@@ -653,9 +653,7 @@ This product page architecture demonstrates experience with:
 
 Product page reference image:
 
-```text id="z6m5qa"
-assets/product-page.png
-```
+![Product](../../assets/product-page.png)
 
 Recommended capture areas:
 

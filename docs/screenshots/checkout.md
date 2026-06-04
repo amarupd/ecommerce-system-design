@@ -681,9 +681,7 @@ This checkout architecture demonstrates experience with:
 
 Checkout reference image:
 
-```text id="c1m9rv"
-assets/checkout.png
-```
+![Checkout](../../assets/checkout.png)
 
 Recommended capture areas:
 

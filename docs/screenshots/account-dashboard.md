@@ -680,9 +680,7 @@ This account dashboard architecture demonstrates experience with:
 
 Account dashboard reference image:
 
-```text id="e5m7rv"
-assets/account-dashboard.png
-```
+![Admin Dashboard](../../assets/admin-dashboard.png)
 
 Recommended capture areas:
 

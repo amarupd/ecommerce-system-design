@@ -801,9 +801,7 @@ This admin panel architecture demonstrates experience with:
 
 Admin dashboard reference image:
 
-```text id="i8n5rv"
-assets/admin-dashboard.png
-```
+![Admin Dashboard](../../assets/admin-dashboard.png)
 
 Recommended capture areas:
 

@@ -623,9 +623,7 @@ This storefront architecture demonstrates experience with:
 
 Storefront reference image:
 
-```text
-assets/storefront.png
-```
+![Storefront](../../assets/storefront.png)
 
 Recommended capture areas:
 
