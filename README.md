@@ -2,6 +2,8 @@
 
 > Production-Grade Ecommerce Architecture Case Study
 
+![Architecture](assets/architecture.png)
+
 A senior-level system design and backend architecture repository demonstrating how a modern ecommerce platform can be designed, scaled, secured, and operated in production.
 
 This repository is inspired by real-world ecommerce engineering challenges and focuses on architecture, scalability, reliability, security, and operational excellence.
@@ -322,11 +324,15 @@ Repository includes architecture documentation for:
 
 ### Storefront
 
+![Storefront](assets/storefront.png)
+
 - Homepage
 - Product Discovery
 - Search & Filtering
 
 ### Product Details
+
+![Product Details](assets/product-page.png)
 
 - Product Gallery
 - Variant Selection
@@ -334,11 +340,15 @@ Repository includes architecture documentation for:
 
 ### Checkout
 
+![Checkout](assets/checkout.png)
+
 - Address Management
 - Payment Workflow
 - Order Review
 
 ### Customer Dashboard
+
+![Mobile App](assets/mobile-app.png)
 
 - Orders
 - Addresses
@@ -346,6 +356,8 @@ Repository includes architecture documentation for:
 - Profile
 
 ### Admin Platform
+
+![Admin Dashboard](assets/admin-dashboard.png)
 
 - Product Management
 - Inventory Management
